@@ -175,15 +175,15 @@ long LinuxParser::ActiveJiffies() {
       std::istringstream stringstream(line);
       if (stringstream >> key) {
         if (key == "cpu") {
-          for (int i = 0; i < 10; i++) {
+          for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
             stringstream >> values[i];
           }
-          user = std::stoi(values[0]);
-          nice = std::stol(values[1]);
-          system = std::stol(values[2]);
-          irq = std::stol(values[5]);
-          softirq = std::stol(values[6]);
-          steal = std::stol(values[7]);
+          user = std::stoi(values[CPUStates::kUser_]);
+          nice = std::stol(values[CPUStates::kNice_]);
+          system = std::stol(values[CPUStates::kSystem_]);
+          irq = std::stol(values[CPUStates::kIRQ_]);
+          softirq = std::stol(values[CPUStates::kSoftIRQ_]);
+          steal = std::stol(values[CPUStates::kSteal_]);
           active_all_time = user + nice + system + irq + softirq + steal;
           return active_all_time;
         }
@@ -208,11 +208,11 @@ long LinuxParser::IdleJiffies() {
       std::istringstream stringstream(line);
       if (stringstream >> key) {
         if (key == "cpu") {
-          for (int i = 0; i < 10; i++) {
+          for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
             stringstream >> values[i];
           }
-          idle = std::stol(values[3]);
-          iowait = std::stol(values[4]);
+          idle = std::stol(values[CPUStates::kIdle_]);
+          iowait = std::stol(values[CPUStates::kIOwait_]);
           idle_all_time = idle + iowait;
           return idle_all_time;
         }
