@@ -19,11 +19,11 @@ const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
 // System
-float MemoryUtilization();
-long UpTime();
+float MemoryUtilization();      // TODO (DONE)
+long UpTime();                  // TODO (DONE)
 std::vector<int> Pids();        // DONE (BONUS)
-int TotalProcesses();
-int RunningProcesses();
+int TotalProcesses();           // TODO (DONE)
+int RunningProcesses();         // TODO (DONE)
 std::string OperatingSystem();  // DONE
 std::string Kernel();           // DONE
 
