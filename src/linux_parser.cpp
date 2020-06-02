@@ -280,7 +280,7 @@ string LinuxParser::Command(int pid) {
   string line;
   vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
-  std::ifstream filestream(kProcDirectory + kPidFilename + kStatFilename);
+  std::ifstream filestream(kProcDirectory + kPidFilename + kCmdlineFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       cmd = line;
