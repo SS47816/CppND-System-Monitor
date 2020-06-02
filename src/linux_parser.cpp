@@ -116,8 +116,8 @@ long LinuxParser::UpTime() {
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
-  const long active_all_time = LinuxParser::ActiveJiffies();
-  const long idle_all_time = LinuxParser::IdleJiffies();
+  const auto active_all_time = LinuxParser::ActiveJiffies();
+  const auto idle_all_time = LinuxParser::IdleJiffies();
 
   return active_all_time + idle_all_time;
 }
