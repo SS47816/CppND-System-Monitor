@@ -149,7 +149,7 @@ long LinuxParser::ActiveJiffies(int pid) {
       starttime = std::stol(values[kStart + 8]);
       const auto total_time = utime + stime + cutime + cstime;
       // const auto uptime = LinuxParser::UpTime();
-      // const float Hertz = 100.0f;
+      // const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
       // const auto seconds = uptime - (starttime / Hertz);
       // const auto cpu_usage = 100.0f * ((total_time / Hertz) / seconds);
       active_all_time = total_time;
@@ -279,7 +279,28 @@ string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(int pid) {
+  string mem;
+  string line;
+  string key;
+  string value;
+  const string kPidFilename = "/" + std::to_string(pid);
+  std::ifstream filestream(kProcDirectory + kPidFilename + kStatusFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        if (key == "VmSize") {
+          mem = value;
+          return mem;
+        }
+      }
+    }
+  }
+  
+  return mem;
+}
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
