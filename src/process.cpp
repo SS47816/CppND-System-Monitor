@@ -15,11 +15,6 @@ Process::Process(int pid) {
   this->pid_ = pid;
   this->user_ = LinuxParser::User(pid);
   this->command_ = LinuxParser::Command(pid);
-  const auto total_time_= LinuxParser::ActiveJiffies(pid);
-  const auto uptime = LinuxParser::UpTime(pid);
-  const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
-  const auto seconds = uptime - (starttime / Hertz);
-  const auto cpu_usage = 100.0f * ((total_time / Hertz) / seconds);
   this->ram_ = LinuxParser::Ram(pid);
   this->up_time_ = LinuxParser::UpTime(pid);
 }
@@ -30,10 +25,20 @@ int Process::Pid() {
 }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization() {
+  const auto uptime = LinuxParser::UpTime();
+  const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
+  const auto total_time = LinuxParser::ActiveJiffies(this->pid_);
+  const auto lifespan = LinuxParser::UpTime(this->pid_);
+  this->cpu_utilization_ = 100.0f*((total_time / Hertz) / lifespan);
+  return cpu_utilization_;
+}
 
 // TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+string Process::Command() {
+  this->command_ = LinuxParser::Command(this->pid_);
+  return this->command_;
+}
 
 // TODO: Return this process's memory utilization
 string Process::Ram() { return string(); }
@@ -44,7 +49,7 @@ string Process::User() { return string(); }
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() {
   this->up_time_ = LinuxParser::UpTime(this->pid_);
-  return this->up_time_; 
+  return this->up_time_;
 }
 
 // TODO: Overload the "less than" comparison operator for Process objects

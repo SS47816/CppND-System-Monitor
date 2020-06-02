@@ -124,15 +124,14 @@ long LinuxParser::Jiffies() {
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
-float LinuxParser::CpuUtilization(int pid) {
+long LinuxParser::ActiveJiffies(int pid) {
   // long active_all_time = 0;
-  float cpu_usage;
+  long total_time;
   const int kStart = 13;
   long utime;
   long stime;
   long cutime;
   long cstime;
-  long starttime;
   string line;
   vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
@@ -147,18 +146,18 @@ float LinuxParser::CpuUtilization(int pid) {
       stime = std::stol(values[kStart + 1]);
       cutime = std::stol(values[kStart + 2]);
       cstime = std::stol(values[kStart + 3]);
-      starttime = std::stol(values[kStart + 8]);
+
       const auto total_time = utime + stime + cutime + cstime;
-      const auto uptime = LinuxParser::UpTime();
-      const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
-      const auto seconds = uptime - (starttime / Hertz);
-      const auto cpu_usage = 100.0f*((total_time / Hertz) / seconds);
+      // const auto uptime = LinuxParser::UpTime();
+      // const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
+      // const auto seconds = uptime - (starttime / Hertz);
+      // cpu_usage = 100.0f*((total_time / Hertz) / seconds);
       // active_all_time = total_time;
-      return cpu_usage;
+      return total_time;
     }
   }
   
-  return cpu_usage;
+  return total_time;
 }
 
 // TODO: Read and return the number of active jiffies for the system
@@ -373,8 +372,9 @@ string LinuxParser::User(int pid) {
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) {
-  long up_time = 0;
+  long lifespan = 0;
   const int kStart = 13;
+  long starttime;
   string line;
   vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
@@ -385,11 +385,14 @@ long LinuxParser::UpTime(int pid) {
       for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
         linestream >> values[i];
       }
-      up_time = std::stol(values[kStart + 8]);
-      
-      return up_time;
+      starttime = std::stol(values[kStart + 8]);
+      const auto uptime = LinuxParser::UpTime();
+      const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
+      lifespan = uptime - (starttime / Hertz);
+
+      return lifespan;
     }
   }
   
-  return up_time;
+  return lifespan;
 }
