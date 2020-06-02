@@ -131,7 +131,7 @@ long LinuxParser::ActiveJiffies(int pid) {
   long stime;
   long cutime;
   long cstime;
-  long starttime;
+  // long starttime;
   string line;
   vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
@@ -146,7 +146,7 @@ long LinuxParser::ActiveJiffies(int pid) {
       stime = std::stol(values[kStart + 1]);
       cutime = std::stol(values[kStart + 2]);
       cstime = std::stol(values[kStart + 3]);
-      starttime = std::stol(values[kStart + 8]);
+      // starttime = std::stol(values[kStart + 8]);
       const auto total_time = utime + stime + cutime + cstime;
       // const auto uptime = LinuxParser::UpTime();
       // const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
@@ -355,4 +355,24 @@ string LinuxParser::User(int pid) {
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+long LinuxParser::UpTime(int pid) {
+  long up_time;
+  const int kStart = 13;
+  string line;
+  vector<string> values;
+  const string kPidFilename = "/" + std::to_string(pid);
+  std::ifstream filestream(kProcDirectory + kPidFilename + kStatFilename);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
+        linestream >> values[i];
+      }
+      up_time = std::stol(values[kStart + 8]);
+      
+      return up_time;
+    }
+  }
+  
+  return up_time;
+}
