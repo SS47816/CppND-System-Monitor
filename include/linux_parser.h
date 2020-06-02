@@ -40,11 +40,11 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
-std::vector<std::string> CpuUtilization();
-long Jiffies();
-long ActiveJiffies();
-long ActiveJiffies(int pid);
-long IdleJiffies();
+std::vector<std::string> CpuUtilization();  // TODO 
+long Jiffies();                             // TODO (DONE)
+long ActiveJiffies();                       // TODO (DONE)
+long ActiveJiffies(int pid);                // TODO 
+long IdleJiffies();                         // TODO (DONE)
 
 // Processes
 std::string Command(int pid);
