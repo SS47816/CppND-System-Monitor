@@ -125,7 +125,7 @@ long LinuxParser::Jiffies() {
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid) {
-  long active_all_time;
+  long active_all_time = 0;
   const int kStart = 13;
   long utime;
   long stime;
@@ -356,7 +356,7 @@ string LinuxParser::User(int pid) {
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) {
-  long up_time;
+  long up_time = 0;
   const int kStart = 13;
   string line;
   vector<string> values;
