@@ -116,6 +116,18 @@ long LinuxParser::UpTime() {
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
+  const long active_all_time = LinuxParser::ActiveJiffies();
+  const long idle_all_time = LinuxParser::IdleJiffies();
+
+  return active_all_time + idle_all_time;
+}
+
+// TODO: Read and return the number of active jiffies for a PID
+// REMOVE: [[maybe_unused]] once you define the function
+long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+
+// TODO: Read and return the number of active jiffies for the system
+long LinuxParser::ActiveJiffies() {
   long active_all_time;
   long user;
   long nice;
@@ -149,51 +161,6 @@ long LinuxParser::Jiffies() {
   }
 
   return active_all_time;
-}
-
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() {
-  long system_all_time;
-  long user;
-  long nice;
-  long system;
-  long idle;
-  long iowait;
-  long irq;
-  long softirq;
-  long steal;
-  string line;
-  string key;
-  vector<string> values;
-  std::ifstream filestream(kProcDirectory + kStatFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream stringstream(line);
-      if (stringstream >> key) {
-        if (key == "cpu") {
-          for (int i = 0; i < 10; i++) {
-            stringstream >> values[i];
-          }
-          user = std::stoi(values[0]);
-          nice = std::stol(values[1]);
-          system = std::stol(values[2]);
-          idle = std::stol(values[3]);
-          iowait = std::stol(values[4]);
-          irq = std::stol(values[5]);
-          softirq = std::stol(values[6]);
-          steal = std::stol(values[7]);
-          system_all_time = user + nice + system + idle + iowait +irq + softirq + steal;
-          return system_all_time;
-        }
-      }
-    }
-  }
-
-  return system_all_time;
 }
 
 // TODO: Read and return the number of idle jiffies for the system
