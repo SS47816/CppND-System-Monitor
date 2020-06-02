@@ -176,7 +176,7 @@ long LinuxParser::ActiveJiffies() {
           irq = std::stol(values[5]);
           softirq = std::stol(values[6]);
           steal = std::stol(values[7]);
-          active = system + irq + softirq;
+          active = user + nice + system + irq + softirq + steal;
           return active;
         }
       }
