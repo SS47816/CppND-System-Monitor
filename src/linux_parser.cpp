@@ -127,12 +127,11 @@ long LinuxParser::Jiffies() {
 long LinuxParser::ActiveJiffies(int pid) {
   long active_all_time;
   const int kStart = 13;
-  long user;
-  long nice;
-  long system;
-  long irq;
-  long softirq;
-  long steal;
+  long utime;
+  long stime;
+  long cutime;
+  long cstime;
+  long starttime;
   string line;
   vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
@@ -143,13 +142,17 @@ long LinuxParser::ActiveJiffies(int pid) {
       for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
         linestream >> values[i];
       }
-      user = std::stoi(values[kStart + CPUStates::kUser_]);
-      nice = std::stol(values[kStart + CPUStates::kNice_]);
-      system = std::stol(values[kStart + CPUStates::kSystem_]);
-      irq = std::stol(values[kStart + CPUStates::kIRQ_]);
-      softirq = std::stol(values[kStart + CPUStates::kSoftIRQ_]);
-      steal = std::stol(values[kStart + CPUStates::kSteal_]);
-      active_all_time = user + nice + system + irq + softirq + steal;
+      utime = std::stoi(values[kStart]);
+      stime = std::stol(values[kStart + 1]);
+      cutime = std::stol(values[kStart + 2]);
+      cstime = std::stol(values[kStart + 3]);
+      starttime = std::stol(values[kStart + 8]);
+      const auto total_time = utime + stime + cutime + cstime;
+      // const auto uptime = LinuxParser::UpTime();
+      // const float Hertz = 100.0f;
+      // const auto seconds = uptime - (starttime / Hertz);
+      // const auto cpu_usage = 100.0f * ((total_time / Hertz) / seconds);
+      active_all_time = total_time;
       return active_all_time;
     }
   }
