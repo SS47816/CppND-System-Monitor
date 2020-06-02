@@ -116,7 +116,10 @@ long LinuxParser::UpTime() {
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
-  long jiffies;
+  long system_all_time;
+  long system;
+  long irq;
+  long softirq;
   string line;
   string key;
   vector<string> values;
@@ -129,14 +132,17 @@ long LinuxParser::Jiffies() {
           for (int i = 0; i < 10; i++) {
             stringstream >> values[i];
           }
-          jiffies = std::stol(values[2]);
-          return jiffies;
+          system = std::stol(values[2]);
+          irq = std::stol(values[5]);
+          softirq = std::stol(values[6]);
+          system_all_time = system + irq + softirq;
+          return system_all_time;
         }
       }
     }
   }
 
-  return jiffies;
+  return system_all_time;
 }
 
 // TODO: Read and return the number of active jiffies for a PID
@@ -144,7 +150,9 @@ long LinuxParser::Jiffies() {
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() {
+
+}
 
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
