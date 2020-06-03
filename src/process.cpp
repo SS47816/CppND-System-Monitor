@@ -15,17 +15,16 @@ Process::Process(int pid) : pid_(pid) {}
 
 // TODO: Return this process's ID
 int Process::Pid() {
-  return pid_;
+  return this->pid_;
 }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() {
-  const auto uptime = LinuxParser::UpTime();
   const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
   const auto total_time = LinuxParser::ActiveJiffies(this->pid_);
   const auto lifespan = LinuxParser::UpTime(this->pid_);
   this->cpu_utilization_ = 100.0f*((total_time / Hertz) / lifespan);
-  return cpu_utilization_;
+  return this->cpu_utilization_;
 }
 
 // TODO: Return the command that generated this process

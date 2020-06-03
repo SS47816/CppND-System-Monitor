@@ -20,7 +20,7 @@ Processor& System::Cpu() {
 }
 
 bool Compare(const Process &a, const Process &b) {
-  return a < b? true : false;
+  return b.operator<(a);
 }
 
 // TODO: Return a container composed of the system's processes
