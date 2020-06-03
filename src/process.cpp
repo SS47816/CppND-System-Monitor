@@ -23,7 +23,7 @@ float Process::CpuUtilization() {
   const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
   const auto total_time = LinuxParser::ActiveJiffies(this->pid_);
   const auto lifespan = LinuxParser::UpTime(this->pid_);
-  this->cpu_utilization_ = 100.0f*((total_time / Hertz) / lifespan);
+  this->cpu_utilization_ = (total_time / Hertz) / lifespan;
   return this->cpu_utilization_;
 }
 
