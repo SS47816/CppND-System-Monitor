@@ -126,13 +126,12 @@ long LinuxParser::Jiffies() {
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid) {
-  // long active_all_time = 0;
   long total_time = 0;
   const int kStart = 13;
   long utime;
   long stime;
-  long cutime;
-  long cstime;
+  // long cutime;
+  // long cstime;
   string line;
   vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
@@ -147,15 +146,10 @@ long LinuxParser::ActiveJiffies(int pid) {
       }
       utime = std::stoi(values[kStart]);
       stime = std::stol(values[kStart + 1]);
-      cutime = std::stol(values[kStart + 2]);
-      cstime = std::stol(values[kStart + 3]);
+      // cutime = std::stol(values[kStart + 2]);
+      // cstime = std::stol(values[kStart + 3]);
+      const auto total_time = utime + stime;
 
-      const auto total_time = utime + stime + cutime + cstime;
-      // const auto uptime = LinuxParser::UpTime();
-      // const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
-      // const auto seconds = uptime - (starttime / Hertz);
-      // cpu_usage = 100.0f*((total_time / Hertz) / seconds);
-      // active_all_time = total_time;
       return total_time;
     }
   }
