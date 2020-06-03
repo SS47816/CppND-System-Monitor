@@ -70,6 +70,7 @@ vector<int> LinuxParser::Pids() {
 float LinuxParser::MemoryUtilization() {
   float mem_total;
   float mem_free;
+  float mem_usage;
   // float mem_available;
   // float buffers;
   string line;
@@ -84,8 +85,8 @@ float LinuxParser::MemoryUtilization() {
         if (key == "MemTotal") mem_total = std::stof(value);
         else if (key == "MemFree") {
           mem_free = std::stof(value);
-          const float mem_used = mem_total - mem_free;
-          return mem_used > 0.0? mem_used : 0.0;
+          mem_usage = (mem_total - mem_free) / mem_total;
+          return mem_usage > 0.0? mem_usage : 0.0;
         }
         // else if (key == "MemAvailable") mem_available = std::stof(value);
         // else if (key == "Buffers") 
@@ -93,7 +94,7 @@ float LinuxParser::MemoryUtilization() {
     }
   }
 
-  return mem_total - mem_free;
+  return mem_usage;
 }
 
 // TODO: Read and return the system uptime
