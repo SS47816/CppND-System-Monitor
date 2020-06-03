@@ -19,6 +19,10 @@ Processor& System::Cpu() {
   return this->cpu_;
 }
 
+bool Compare(const Process &a, const Process &b) {
+  return a < b? true : false;
+}
+
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
   this->pid_ = LinuxParser::Pids();
@@ -27,6 +31,7 @@ vector<Process>& System::Processes() {
     Process process(pid);
     processes.push_back(process);
   }
+  std::sort(processes.begin(), processes.end(), Compare);
   this->processes_ = processes;
 
   return this->processes_;
