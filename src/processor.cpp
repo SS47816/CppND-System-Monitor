@@ -5,8 +5,7 @@
 float Processor::Utilization() {
   this->system_all_time_ = LinuxParser::Jiffies();
   this->active_all_time_ = LinuxParser::ActiveJiffies();
-
-  this->utilization_ = this->active_all_time_ * 1.0f / this->system_all_time_ * 100.0f;
+  this->utilization_ = this->active_all_time_ * 1.0f / this->system_all_time_;
   
   return this->utilization_;
 }
