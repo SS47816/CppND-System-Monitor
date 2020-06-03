@@ -140,7 +140,9 @@ long LinuxParser::ActiveJiffies(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
-        linestream >> values[i];
+        string value;
+        linestream >> value;
+        values.push_back(value);
       }
       utime = std::stoi(values[kStart]);
       stime = std::stol(values[kStart + 1]);
@@ -179,7 +181,9 @@ long LinuxParser::ActiveJiffies() {
       if (stringstream >> key) {
         if (key == "cpu") {
           for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
-            stringstream >> values[i];
+            string value;
+            stringstream >> value;
+            values.push_back(value);
           }
           user = std::stoi(values[CPUStates::kUser_]);
           nice = std::stol(values[CPUStates::kNice_]);
@@ -212,7 +216,9 @@ long LinuxParser::IdleJiffies() {
       if (stringstream >> key) {
         if (key == "cpu") {
           for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
-            stringstream >> values[i];
+            string value;
+            stringstream >> value;
+            values.push_back(value);
           }
           idle = std::stol(values[CPUStates::kIdle_]);
           iowait = std::stol(values[CPUStates::kIOwait_]);
@@ -383,7 +389,9 @@ long LinuxParser::UpTime(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
-        linestream >> values[i];
+        string value;
+        linestream >> value;
+        values.push_back(value);
       }
       starttime = std::stol(values[kStart + 8]);
       const auto uptime = LinuxParser::UpTime();
