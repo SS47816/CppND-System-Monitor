@@ -7,6 +7,8 @@
 
 #include "linux_parser.h"
 
+#define printVariableNameAndValue(x) cout<<"The name of variable **"<<(#x)<<"** and the value of variable is => "<<x<<"\n"
+
 using std::stof;
 using std::string;
 using std::to_string;
