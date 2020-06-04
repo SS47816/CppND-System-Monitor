@@ -15,7 +15,7 @@ template<typename T> T findValueByKey(std::string const &keyFilter, std::string 
   std::string line, key;
   T value;
 
-  std::ifstream stream(kProcDirectory + filename);
+  std::ifstream stream(filename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
@@ -33,7 +33,7 @@ template<typename T> T getValueOfFile(std::string const &filename) {
   std::string line;
   T value;
 
-  std::ifstream stream(kProcDirectory + filename);
+  std::ifstream stream(filename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
@@ -100,33 +100,11 @@ vector<int> LinuxParser::Pids() {
 
 // TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
-  float mem_usage = 0.0f;
-  float mem_total;
-  float mem_free;
-  // float mem_available;
-  // float buffers;
-  string line;
-  string key;
-  string value;
-  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream linestream(line);
-      if (linestream >> key >> value) {
-        if (key == "MemTotal") mem_total = std::stof(value);
-        else if (key == "MemFree") {
-          mem_free = std::stof(value);
-          mem_usage = (mem_total - mem_free) / mem_total;
-          return mem_usage > 0.0? mem_usage : 0.0;
-        }
-        // else if (key == "MemAvailable") mem_available = std::stof(value);
-        // else if (key == "Buffers") 
-      }
-    }
-  }
+  const auto mem_total = findValueByKey<string>("MemTotal:", kProcDirectory + kMeminfoFilename);
+  const auto mem_free = findValueByKey<string>("MemFree:", kProcDirectory + kMeminfoFilename);
+  const auto mem_usage = (std::stof(mem_total) - std::stof(mem_free)) / std::stof(mem_total);
 
-  return mem_usage;
+  return mem_usage > 0.0f ? mem_usage : 0.0f;
 }
 
 // TODO: Read and return the system uptime
