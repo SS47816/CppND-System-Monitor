@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <typeinfo>
 
 #include "linux_parser.h"
 
@@ -11,7 +13,8 @@ using std::to_string;
 using std::vector;
 
 // Template functions for parsing data from file
-template<typename T> T findValueByKey(std::string const &keyFilter, std::string const &filename) {
+template<typename T> 
+T findValueByKey(std::string const &keyFilter, std::string const &filename) {
   std::string line, key;
   T value;
 
@@ -29,7 +32,8 @@ template<typename T> T findValueByKey(std::string const &keyFilter, std::string 
   return value;
 };
 
-template<typename T> T getValueOfFile(std::string const &filename) {
+template<typename T> 
+T getValueOfFile(std::string const &filename) {
   std::string line;
   T value;
 
@@ -100,10 +104,21 @@ vector<int> LinuxParser::Pids() {
 
 // TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
-  const auto mem_total = findValueByKey<string>("MemTotal:", kProcDirectory + kMeminfoFilename);
-  const auto mem_free = findValueByKey<string>("MemFree:", kProcDirectory + kMeminfoFilename);
-  const auto mem_usage = (std::stof(mem_total) - std::stof(mem_free)) / std::stof(mem_total);
+  float mem_total;
+  float mem_free;
+  const auto mem_total_string = findValueByKey<string>("MemTotal:", kProcDirectory + kMeminfoFilename);
+  const auto mem_free_string = findValueByKey<string>("MemFree:", kProcDirectory + kMeminfoFilename);
+  try {
+    mem_total = std::stof(mem_total_string);
+    mem_free = std::stof(mem_free_string);
+  }
+  // catch invalid_argument exception. 
+  catch(const std::invalid_argument){ 
+    std::cerr << "Invalid argument" << "\n"; 
+    return 0.0f;
+  } 
 
+  const auto mem_usage = (mem_total - mem_free) / mem_total;
   return mem_usage > 0.0f ? mem_usage : 0.0f;
 }
 
