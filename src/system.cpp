@@ -30,7 +30,7 @@ vector<Process>& System::Processes() {
   for (auto pid : pid_) {
     Process process(pid);
     process.CpuUtilization();
-    processes.push_back(process);
+    processes.emplace_back(process);
   }
   std::sort(processes.begin(), processes.end(), Compare);
   this->processes_ = processes;

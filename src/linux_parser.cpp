@@ -94,7 +94,7 @@ vector<int> LinuxParser::Pids() {
       string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename);
-        pids.push_back(pid);
+        pids.emplace_back(pid);
       }
     }
   }
@@ -161,7 +161,7 @@ long LinuxParser::ActiveJiffies(int pid) {
       for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
         string value;
         linestream >> value;
-        values.push_back(value);
+        values.emplace_back(value);
       }
       try {
         utime = std::stoi(values[kStart]);
@@ -203,7 +203,7 @@ long LinuxParser::ActiveJiffies() {
           for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
             string value;
             stringstream >> value;
-            values.push_back(value);
+            values.emplace_back(value);
           }
           try {
             user = std::stoi(values[CPUStates::kUser_]);
@@ -245,7 +245,7 @@ long LinuxParser::IdleJiffies() {
           for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
             string value;
             stringstream >> value;
-            values.push_back(value);
+            values.emplace_back(value);
           }
           try {
             idle = std::stol(values[CPUStates::kIdle_]);
@@ -365,7 +365,7 @@ long LinuxParser::UpTime(int pid) {
       for (int i = 0; i <= kStart + CPUStates::kGuestNice_; i++) {
         string value;
         linestream >> value;
-        values.push_back(value);
+        values.emplace_back(value);
       }
       try {
         starttime = std::stol(values[kStart + 8]);
