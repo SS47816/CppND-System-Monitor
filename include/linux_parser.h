@@ -17,15 +17,24 @@ const std::string kMeminfoFilename{"/meminfo"};
 const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
+// Names
+const std::string filterOS("PRETTY_NAME");
+const std::string filterProcesses("processes");
+const std::string filterRunningProcesses("procs_running");
+const std::string filterMemTotalString("MemTotal:");
+const std::string filterMemFreeString("MemFree:");
+const std::string filterCpu("cpu");
+const std::string filterUID("Uid:");
+const std::string filterProcMem("VmData:");
 
 // System
-float MemoryUtilization();      // TODO (DONE)
-long UpTime();                  // TODO (DONE)
-std::vector<int> Pids();        // DONE (BONUS)
-int TotalProcesses();           // TODO (DONE)
-int RunningProcesses();         // TODO (DONE)
-std::string OperatingSystem();  // DONE
-std::string Kernel();           // DONE
+float MemoryUtilization();
+long UpTime();
+std::vector<int> Pids();
+int TotalProcesses();
+int RunningProcesses();
+std::string OperatingSystem();
+std::string Kernel();
 
 // CPU
 enum CPUStates {
@@ -40,11 +49,11 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
-std::vector<std::string> CpuUtilization();  // TODO 
-long Jiffies();                             // TODO (DONE)
-long ActiveJiffies();                       // TODO (DONE)
-long ActiveJiffies(int pid);              // TODO 
-long IdleJiffies();                         // TODO (DONE)
+std::vector<std::string> CpuUtilization();
+long Jiffies();
+long ActiveJiffies();
+long ActiveJiffies(int pid);
+long IdleJiffies();
 
 // Processes
 std::string Command(int pid);

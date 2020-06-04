@@ -59,7 +59,7 @@ string LinuxParser::OperatingSystem() {
       std::replace(line.begin(), line.end(), '"', ' ');
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "PRETTY_NAME") {
+        if (key == filterOS) {
           std::replace(value.begin(), value.end(), '_', ' ');
           return value;
         }
@@ -106,8 +106,8 @@ vector<int> LinuxParser::Pids() {
 float LinuxParser::MemoryUtilization() {
   float mem_total;
   float mem_free;
-  const auto mem_total_string = findValueByKey<string>("MemTotal:", kProcDirectory + kMeminfoFilename);
-  const auto mem_free_string = findValueByKey<string>("MemFree:", kProcDirectory + kMeminfoFilename);
+  const auto mem_total_string = findValueByKey<string>(filterMemTotalString, kProcDirectory + kMeminfoFilename);
+  const auto mem_free_string = findValueByKey<string>(filterMemFreeString, kProcDirectory + kMeminfoFilename);
   try {
     mem_total = std::stof(mem_total_string);
     mem_free = std::stof(mem_free_string);
@@ -199,7 +199,7 @@ long LinuxParser::ActiveJiffies() {
     while (std::getline(filestream, line)) {
       std::istringstream stringstream(line);
       if (stringstream >> key) {
-        if (key == "cpu") {
+        if (key == filterCpu) {
           for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
             string value;
             stringstream >> value;
@@ -241,7 +241,7 @@ long LinuxParser::IdleJiffies() {
     while (std::getline(filestream, line)) {
       std::istringstream stringstream(line);
       if (stringstream >> key) {
-        if (key == "cpu") {
+        if (key == filterCpu) {
           for (int i = 0; i <= CPUStates::kGuestNice_; i++) {
             string value;
             stringstream >> value;
@@ -273,7 +273,7 @@ long LinuxParser::IdleJiffies() {
 
 // DONE: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
-  const auto total_processes = findValueByKey<string>("processes", kProcDirectory + kStatFilename);
+  const auto total_processes = findValueByKey<string>(filterProcesses, kProcDirectory + kStatFilename);
   try {
     return std::stoi(total_processes);
   }
@@ -286,7 +286,7 @@ int LinuxParser::TotalProcesses() {
 
 // DONE: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
-  const auto procs_running = findValueByKey<string>("procs_running", kProcDirectory + kStatFilename);
+  const auto procs_running = findValueByKey<string>(filterRunningProcesses, kProcDirectory + kStatFilename);
   try {
     return std::stoi(procs_running);
   }
@@ -307,7 +307,7 @@ string LinuxParser::Command(int pid) {
 string LinuxParser::Ram(int pid) {
   const string kPidFilename = "/" + std::to_string(pid);
   // Using `VmData` instead of `VmSize` to measure virtual memory utilization
-  const auto mem_string = findValueByKey<string>("VmData:", kProcDirectory + kPidFilename + kStatusFilename);
+  const auto mem_string = findValueByKey<string>(filterProcMem, kProcDirectory + kPidFilename + kStatusFilename);
   try {
     return std::stol(mem_string) >= 1000L? std::to_string(std::stol(mem_string)/1000) : "0." + mem_string;
   }
@@ -322,7 +322,7 @@ string LinuxParser::Ram(int pid) {
 // DONE: Read and return the user ID associated with a process
 string LinuxParser::Uid(int pid) {
   const string kPidFilename = "/" + std::to_string(pid);
-  return findValueByKey<string>("Uid:", kProcDirectory + kPidFilename + kStatusFilename);
+  return findValueByKey<string>(filterUID, kProcDirectory + kPidFilename + kStatusFilename);
 }
 
 // DONE: Read and return the user associated with a process
