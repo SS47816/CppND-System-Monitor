@@ -143,7 +143,7 @@ long LinuxParser::Jiffies() {
   return active_all_time + idle_all_time;
 }
 
-// TODO: Read and return the number of active jiffies for a PID
+// DONE: Read and return the number of active jiffies for a PID
 long LinuxParser::ActiveJiffies(int pid) {
   long total_time = 0;
   const int kStart = 13;
@@ -182,7 +182,7 @@ long LinuxParser::ActiveJiffies(int pid) {
   return total_time;
 }
 
-// TODO: Read and return the number of active jiffies for the system
+// DONE: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() {
   long active_all_time = 0;
   long user;
@@ -297,21 +297,10 @@ int LinuxParser::RunningProcesses() {
   return 0;
 }
 
-// TODO: Read and return the command associated with a process
+// DONE: Read and return the command associated with a process
 string LinuxParser::Command(int pid) {
-  string cmd = string();
-  string line;
-  vector<string> values;
   const string kPidFilename = "/" + std::to_string(pid);
-  std::ifstream filestream(kProcDirectory + kPidFilename + kCmdlineFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      cmd = line;
-      return cmd;
-    }
-  }
-  
-  return cmd;
+  return getValueOfFile<string>(kProcDirectory + kPidFilename + kCmdlineFilename);
 }
 
 // DONE: Read and return the memory used by a process
