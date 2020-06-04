@@ -30,6 +30,10 @@ float Process::CpuUtilization() {
 // TODO: Return the command that generated this process
 string Process::Command() {
   this->command_ = LinuxParser::Command(this->pid_);
+  const size_t max_length = 50;
+  if (this->command_.length() >= max_length - 3) {
+    this->command_ = this->command_.substr(0, max_length - 4) + "...";
+  }
   return this->command_;
 }
 
