@@ -149,7 +149,6 @@ long LinuxParser::Jiffies() {
 }
 
 // TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid) {
   long total_time = 0;
   const int kStart = 13;
@@ -270,7 +269,7 @@ int LinuxParser::TotalProcesses() {
   return 0;
 }
 
-// TODO: Read and return the number of running processes
+// DONE: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   const auto procs_running = findValueByKey<string>("procs_running", kProcDirectory + kStatFilename);
   try {
@@ -284,7 +283,6 @@ int LinuxParser::RunningProcesses() {
 }
 
 // TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Command(int pid) {
   string cmd = string();
   string line;
@@ -302,7 +300,6 @@ string LinuxParser::Command(int pid) {
 }
 
 // TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) {
   string mem = string();
   string line;
@@ -327,7 +324,6 @@ string LinuxParser::Ram(int pid) {
 }
 
 // TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Uid(int pid) {
   string uid = string();
   string line;
@@ -352,7 +348,6 @@ string LinuxParser::Uid(int pid) {
 }
 
 // TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int pid) {
   string user = string();
   const string uid = LinuxParser::Uid(pid);
@@ -378,7 +373,6 @@ string LinuxParser::User(int pid) {
 }
 
 // TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) {
   long lifespan = 0;
   const int kStart = 13;
