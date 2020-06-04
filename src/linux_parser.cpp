@@ -124,20 +124,15 @@ float LinuxParser::MemoryUtilization() {
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() {
-  long up_time = 0;
-  string line;
-  string value1;
-  std::ifstream filestream(kProcDirectory + kUptimeFilename);
-  if (filestream.is_open()) {
-    std::getline(filestream, line);
-    std::istringstream stream(line);
-    while (stream >> value1) {
-      up_time = std::stol(value1);
-      return up_time;
-    }
+  const auto up_time = getValueOfFile<string>(kProcDirectory + kUptimeFilename);
+  try {
+    return std::stol(up_time);
   }
-
-  return up_time;
+  // catch invalid_argument exception. 
+  catch(const std::invalid_argument){ 
+    std::cerr << "Invalid argument" << "\n"; 
+  }
+  return 0L;
 }
 
 // TODO: Read and return the number of jiffies for the system
