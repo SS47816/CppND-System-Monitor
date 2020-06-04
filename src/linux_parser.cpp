@@ -312,26 +312,8 @@ string LinuxParser::Ram(int pid) {
 
 // TODO: Read and return the user ID associated with a process
 string LinuxParser::Uid(int pid) {
-  string uid = string();
-  string line;
-  string key;
-  string value;
   const string kPidFilename = "/" + std::to_string(pid);
-  std::ifstream filestream(kProcDirectory + kPidFilename + kStatusFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream linestream(line);
-      while (linestream >> key >> value) {
-        if (key == "Uid") {
-          uid = value;
-          return uid;
-        }
-      }
-    }
-  }
-  
-  return uid;
+  return findValueByKey<string>("Uid:", kProcDirectory + kPidFilename + kStatusFilename);
 }
 
 // TODO: Read and return the user associated with a process
