@@ -113,7 +113,7 @@ float LinuxParser::MemoryUtilization() {
     mem_free = std::stof(mem_free_string);
   }
   // catch invalid_argument exception. 
-  catch(const std::invalid_argument){ 
+  catch (const std::invalid_argument) { 
     std::cerr << "Invalid argument" << "\n"; 
     return 0.0f;
   } 
@@ -129,7 +129,7 @@ long LinuxParser::UpTime() {
     return std::stol(up_time);
   }
   // catch invalid_argument exception. 
-  catch(const std::invalid_argument){ 
+  catch (const std::invalid_argument) { 
     std::cerr << "Invalid argument" << "\n"; 
   }
   return 0L;
@@ -163,11 +163,17 @@ long LinuxParser::ActiveJiffies(int pid) {
         linestream >> value;
         values.push_back(value);
       }
-      utime = std::stoi(values[kStart]);
-      stime = std::stol(values[kStart + 1]);
-      // cutime = std::stol(values[kStart + 2]);
-      // cstime = std::stol(values[kStart + 3]);
-      const auto total_time = utime + stime;
+      try {
+        utime = std::stoi(values[kStart]);
+        stime = std::stol(values[kStart + 1]);
+        // cutime = std::stol(values[kStart + 2]);
+        // cstime = std::stol(values[kStart + 3]);
+        total_time = utime + stime;
+      }
+      // catch invalid_argument exception. 
+      catch (const std::invalid_argument) { 
+        std::cerr << "Invalid argument" << "\n"; 
+      }
 
       return total_time;
     }
@@ -199,13 +205,20 @@ long LinuxParser::ActiveJiffies() {
             stringstream >> value;
             values.push_back(value);
           }
-          user = std::stoi(values[CPUStates::kUser_]);
-          nice = std::stol(values[CPUStates::kNice_]);
-          system = std::stol(values[CPUStates::kSystem_]);
-          irq = std::stol(values[CPUStates::kIRQ_]);
-          softirq = std::stol(values[CPUStates::kSoftIRQ_]);
-          steal = std::stol(values[CPUStates::kSteal_]);
-          active_all_time = user + nice + system + irq + softirq + steal;
+          try {
+            user = std::stoi(values[CPUStates::kUser_]);
+            nice = std::stol(values[CPUStates::kNice_]);
+            system = std::stol(values[CPUStates::kSystem_]);
+            irq = std::stol(values[CPUStates::kIRQ_]);
+            softirq = std::stol(values[CPUStates::kSoftIRQ_]);
+            steal = std::stol(values[CPUStates::kSteal_]);
+            active_all_time = user + nice + system + irq + softirq + steal;
+          }
+          // catch invalid_argument exception. 
+          catch (const std::invalid_argument) { 
+            std::cerr << "Invalid argument" << "\n"; 
+          }
+          
           return active_all_time;
         }
       }
@@ -215,7 +228,7 @@ long LinuxParser::ActiveJiffies() {
   return active_all_time;
 }
 
-// TODO: Read and return the number of idle jiffies for the system
+// DONE: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() {
   long idle_all_time = 0;
   long idle;
@@ -234,9 +247,16 @@ long LinuxParser::IdleJiffies() {
             stringstream >> value;
             values.push_back(value);
           }
-          idle = std::stol(values[CPUStates::kIdle_]);
-          iowait = std::stol(values[CPUStates::kIOwait_]);
-          idle_all_time = idle + iowait;
+          try {
+            idle = std::stol(values[CPUStates::kIdle_]);
+            iowait = std::stol(values[CPUStates::kIOwait_]);
+            idle_all_time = idle + iowait;
+          }
+          // catch invalid_argument exception. 
+          catch (const std::invalid_argument) { 
+            std::cerr << "Invalid argument" << "\n"; 
+          }
+
           return idle_all_time;
         }
       }
@@ -258,7 +278,7 @@ int LinuxParser::TotalProcesses() {
     return std::stoi(total_processes);
   }
   // catch invalid_argument exception. 
-  catch(const std::invalid_argument){ 
+  catch (const std::invalid_argument) { 
     std::cerr << "Invalid argument" << "\n"; 
   }
   return 0;
@@ -271,7 +291,7 @@ int LinuxParser::RunningProcesses() {
     return std::stoi(procs_running);
   }
   // catch invalid_argument exception. 
-  catch(const std::invalid_argument){ 
+  catch (const std::invalid_argument) { 
     std::cerr << "Invalid argument" << "\n"; 
   }
   return 0;
@@ -303,7 +323,7 @@ string LinuxParser::Ram(int pid) {
     return std::stol(mem_string) >= 1000L? std::to_string(std::stol(mem_string)/1000) : "0." + mem_string;
   }
   // catch invalid_argument exception. 
-  catch(const std::invalid_argument){ 
+  catch (const std::invalid_argument) { 
     std::cerr << "Invalid argument" << "\n"; 
   } 
   
@@ -365,10 +385,10 @@ long LinuxParser::UpTime(int pid) {
         lifespan = uptime - (starttime / Hertz);
       }
       // catch invalid_argument exception. 
-      catch(const std::invalid_argument){ 
+      catch (const std::invalid_argument) { 
         std::cerr << "Invalid argument" << "\n"; 
       }
-      
+
       return lifespan;
     }
   }
