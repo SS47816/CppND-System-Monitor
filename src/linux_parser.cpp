@@ -122,7 +122,7 @@ float LinuxParser::MemoryUtilization() {
   return mem_usage > 0.0f ? mem_usage : 0.0f;
 }
 
-// TODO: Read and return the system uptime
+// DONE: Read and return the system uptime
 long LinuxParser::UpTime() {
   const auto up_time = getValueOfFile<string>(kProcDirectory + kUptimeFilename);
   try {
@@ -135,7 +135,7 @@ long LinuxParser::UpTime() {
   return 0L;
 }
 
-// TODO: Read and return the number of jiffies for the system
+// DONE: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
   const auto active_all_time = LinuxParser::ActiveJiffies();
   const auto idle_all_time = LinuxParser::IdleJiffies();
@@ -247,9 +247,9 @@ long LinuxParser::IdleJiffies() {
 }
 
 // NOT USED: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { 
-  return {};
-}
+// vector<string> LinuxParser::CpuUtilization() { 
+//   return {};
+// }
 
 // DONE: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
@@ -294,28 +294,20 @@ string LinuxParser::Command(int pid) {
   return cmd;
 }
 
-// TODO: Read and return the memory used by a process
+// DONE: Read and return the memory used by a process
 string LinuxParser::Ram(int pid) {
-  string mem = string();
-  string line;
-  string key;
-  string value;
   const string kPidFilename = "/" + std::to_string(pid);
-  std::ifstream filestream(kProcDirectory + kPidFilename + kStatusFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream linestream(line);
-      while (linestream >> key >> value) {
-        if (key == "VmSize") {
-          mem = std::to_string(std::stol(value)/1000);
-          return mem;
-        }
-      }
-    }
+  // Using `VmData` instead of `VmSize` to measure virtual memory utilization
+  const auto mem_string = findValueByKey<string>("VmData:", kProcDirectory + kPidFilename + kStatusFilename);
+  try {
+    return std::stol(mem_string) >= 1000L? std::to_string(std::stol(mem_string)/1000) : "0." + mem_string;
   }
+  // catch invalid_argument exception. 
+  catch(const std::invalid_argument){ 
+    std::cerr << "Invalid argument" << "\n"; 
+  } 
   
-  return mem;
+  return "N.A.";
 }
 
 // TODO: Read and return the user ID associated with a process
