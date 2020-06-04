@@ -310,13 +310,13 @@ string LinuxParser::Ram(int pid) {
   return "N.A.";
 }
 
-// TODO: Read and return the user ID associated with a process
+// DONE: Read and return the user ID associated with a process
 string LinuxParser::Uid(int pid) {
   const string kPidFilename = "/" + std::to_string(pid);
   return findValueByKey<string>("Uid:", kProcDirectory + kPidFilename + kStatusFilename);
 }
 
-// TODO: Read and return the user associated with a process
+// DONE: Read and return the user associated with a process
 string LinuxParser::User(int pid) {
   string user = string();
   const string uid = LinuxParser::Uid(pid);
@@ -341,7 +341,7 @@ string LinuxParser::User(int pid) {
   return user;
 }
 
-// TODO: Read and return the uptime of a process
+// DONE: Read and return the uptime of a process
 long LinuxParser::UpTime(int pid) {
   long lifespan = 0;
   const int kStart = 13;
@@ -358,11 +358,17 @@ long LinuxParser::UpTime(int pid) {
         linestream >> value;
         values.push_back(value);
       }
-      starttime = std::stol(values[kStart + 8]);
-      const auto uptime = LinuxParser::UpTime();
-      const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
-      lifespan = uptime - (starttime / Hertz);
-
+      try {
+        starttime = std::stol(values[kStart + 8]);
+        const auto uptime = LinuxParser::UpTime();
+        const auto Hertz = sysconf(_SC_CLK_TCK)*1.0f;
+        lifespan = uptime - (starttime / Hertz);
+      }
+      // catch invalid_argument exception. 
+      catch(const std::invalid_argument){ 
+        std::cerr << "Invalid argument" << "\n"; 
+      }
+      
       return lifespan;
     }
   }
