@@ -102,7 +102,7 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
+// DONE: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
   float mem_total;
   float mem_free;
@@ -252,37 +252,35 @@ long LinuxParser::IdleJiffies() {
   return idle_all_time;
 }
 
-// TODO: Read and return CPU utilization
+// NOT USED: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
   return {};
 }
 
-// TODO: Read and return the total number of processes
+// DONE: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
   const auto total_processes = findValueByKey<string>("processes", kProcDirectory + kStatFilename);
-  return std::stoi(total_processes);
+  try {
+    return std::stoi(total_processes);
+  }
+  // catch invalid_argument exception. 
+  catch(const std::invalid_argument){ 
+    std::cerr << "Invalid argument" << "\n"; 
+  }
+  return 0;
 }
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
-  int procs_running = 0;
-  string line;
-  string key;
-  string value;
-  std::ifstream filestream(kProcDirectory + kStatFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
-      while (linestream >> key >> value) {
-        if (key == "procs_running") {
-          procs_running = std::stoi(value);
-          return procs_running;
-        }
-      }
-    }
+  const auto procs_running = findValueByKey<string>("procs_running", kProcDirectory + kStatFilename);
+  try {
+    return std::stoi(procs_running);
   }
-
-  return procs_running;
+  // catch invalid_argument exception. 
+  catch(const std::invalid_argument){ 
+    std::cerr << "Invalid argument" << "\n"; 
+  }
+  return 0;
 }
 
 // TODO: Read and return the command associated with a process
